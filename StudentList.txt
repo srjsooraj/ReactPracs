@@ -1,0 +1,114 @@
+import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Addstudent from '../Addstudent';
+import Updatestudent from '../Updatestudent';
+
+//import Student from './Student';
+
+ 
+
+class StudentList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            updateFlag:false,
+            students:
+            [{"id":101,"name":"xxx","grade":"A"},
+            {"id":102,"name":"YY","grade":"C"},
+            {"id":103,"name":"xZZ","grade":"A"}],
+            student:{}
+         };
+    }
+
+
+removeStudentDetail(index)
+{
+    console.log(index);
+    const current = this.state;
+    let newstate = current.students.filter((student,ind) => {
+         return ind !== index;
+    });
+    this.setState(state => ({students: newstate}));
+}
+
+editStudentDetail=(index)=>
+{
+    
+    let student=this.state.students.slice(index,index+1)
+//console.log(student[0]);
+let newstate = this.state.students.filter((student,ind) => {
+    return ind !== index;
+});
+this.setState({student:student[0],updateFlag:true,students:newstate})
+}
+
+addStudent=(student)=>{
+    console.log("received");
+    console.log(student);
+    student.id=Math.floor(Math.random() * 10);
+    let students=[...this.state.students,student]
+    this.setState({
+        students:students
+    })
+}
+
+
+updateStudent=(student)=>{
+    console.log("update received")
+    console.log(student);
+    let students=[...this.state.students,student]
+    this.setState({
+        students:students,updateFlag:false
+    })
+    
+    
+}
+
+
+
+
+
+    render() {
+        return (
+            <div>
+                
+                <h1>student detail</h1>
+                <table className="table">
+                    <thead className="thead-dark">
+                        <th>id                       
+                        </th>
+                        <th>name                      
+                        </th>
+                        <th>grade                      
+                        </th>
+                        <th>                     
+                        </th>
+                        <th>                  
+                        </th>
+                        
+                    </thead>
+                    <tbody>
+                        {
+                            this.state.students.map((student,index)=>{
+                                return(<tr key={this.props.ind}>
+                                    <td>{student.id}</td>
+                                    <td>{student.name}</td>
+                                    <td>{student.grade}</td>
+                                    <td><button className="btn btn-primary" onClick={()=>this.editStudentDetail(index)}>Edit</button></td>
+                                    <td><button className="btn btn-danger" onClick={()=>this.removeStudentDetail(index)}>delete</button></td>
+                                    </tr> );
+                             })
+                        }
+                    </tbody>
+                </table>
+<h3>Student Form</h3>
+{ !this.state.updateFlag?(<Addstudent addStudent={this.addStudent} />):
+(<Updatestudent  student={this.state.student} updateStudent={this.updateStudent}/>)
+
+    }
+            </div>
+        );
+    }
+}
+
+export default StudentList;
