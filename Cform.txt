@@ -1,0 +1,54 @@
+
+import React, { Component } from 'react';
+
+class Cform extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {  };
+    }
+handleSubmit=()=>{
+console.log(this.firstName)
+    console.log(this.firstName.value)
+}
+
+handleKeyup=(target,e)=>{
+    console.log(target)
+console.log(e.keyCode);
+
+if(e.keyCode===13)
+{
+    switch(target)
+    {
+
+        case 'firstName':
+            this.lastName.focus();
+            break;
+            case 'lastName':
+            this.age.focus();
+            break;
+            case 'age':
+            this.submit.focus();
+            break;
+            default:
+                this.firstName.focus();
+                break;
+    }
+    
+}
+}
+    render() {
+        return (
+            <div>
+                <label htmlFor="firstName" >FirstName</label>
+                <input  type="text" ref={(input)=>{this.firstName=input}} onKeyUp={this.handleKeyup.bind(this,'firstName')}/>
+                <label htmlFor="lastName" >lastName</label>
+                <input  type="text" ref={(input)=>{this.lastName=input}}  onKeyUp={this.handleKeyup.bind(this,'lastName')}/>
+                <label htmlFor="age" >Age</label>
+                <input  type="text" ref={(input)=>{this.age=input}}  onKeyUp={this.handleKeyup.bind(this,'age')}/>
+                <input type="submit" onClick={this.handleSubmit} ref={(input)=>{this.submit=input}}/>
+            </div>
+        );
+    }
+}
+
+export default Cform;

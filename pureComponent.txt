@@ -1,0 +1,51 @@
+
+import React, { Component, PureComponent } from 'react';
+
+
+const Temp = (props) => {
+    return (
+        
+       <>
+       console.log("child rendered")
+          <h1>{props.val}</h1> 
+
+       </>
+
+    );
+}
+
+
+
+
+
+class PurecmpDemo extends PureComponent {
+     state= {val:1};
+
+    componentDidMount(){
+        console.log('componentDidMount');
+        setInterval(() => {
+          this.setState(() => {
+            return { val: Math.random() }
+          });
+        }, 2000)
+      }
+
+    //   shouldComponentUpdate(nextprops,nextstate)
+    //   {
+    //       console.log("calling should component update")
+    //       return this.state.val===nextstate.val?false:true
+    //   }
+
+
+
+    render() {
+        console.log("render parent")
+        return (
+           <>
+           <Temp val={this.state.val}/>
+           </> 
+        );
+    }
+}
+
+export default PurecmpDemo;

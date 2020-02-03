@@ -1,0 +1,164 @@
+
+import React, { Component } from 'react';
+import axios from 'axios'
+import {Table,Button} from 'react-bootstrap'
+import styles from './appStyles.modules.css'
+import Addparticipant from './Addparticipant';
+import '../App.css'
+import './appstyles.css'
+
+
+const header={
+backgroundColor:'sandybrown',
+fontSize:'14px'
+}
+class Participants extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+ 
+            participants:[],
+            participant:{
+                participantId:0,
+                participantName:'',
+                events:'',
+                email:'',
+                contactNo:'',
+                gender:'',
+                newsletter:false,
+                eventDate:''
+
+            },
+            message:'',
+            id:0
+         }
+    }
+
+    componentDidMount()
+    {
+        axios.get("http://localhost:8080/HttpServiceUsage/Participant/").then((res)=>{
+        this.setState({participants:res.data})
+
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+
+deleteParticipant=(id)=>{
+//console.log(id);
+
+axios.delete("http://localhost:8080/HttpServiceUsage/Participant/"+id)
+.then((res)=>{console.log(res.status)
+res.status>=200&&res.status<300?this.setState({message:"deleted successfully"}):this.setState({message:"facing error while deleting data"})
+}).catch((err)=>{console.log(err)})
+
+}
+
+updateParticipant=(id)=>{
+//console.log(id);
+this.setState({id});
+axios.get("http://localhost:8080/HttpServiceUsage/Participant/"+id).then((res)=>{
+//console.log(res.data);
+this.setState({participant:res.data});
+
+}).catch((err)=>{
+    console.log(err);
+})
+}
+
+
+
+onChangeEmail=(e)=>
+{
+   let {participant} =this.state
+  participant.email=e.target.value;
+
+   this.setState({participant})
+}
+
+onChangecontact=(e)=>
+{
+    let {participant} =this.state
+   participant.contactNo=e.target.value;
+   this.setState({participant})
+}
+
+onSubmitParticipant=(event)=>
+{
+    event.preventDefault();
+    
+    let {participant}=this.state
+    console.log(participant)
+    console.log(this.state.id);
+    axios.put("http://localhost:8080/HttpServiceUsage/Participant/"+this.state.id,participant).then((res)=>
+    {
+        console.log(res.status);
+        res.status>=200&&res.status<300?this.setState({message:"updated successfully"}):this.setState({message:"facing error while updating data"})
+    })
+
+}
+
+
+
+    render() { 
+if(this.state.participants.length===0)
+{return(<div></div>)
+}
+
+        return (<div>
+<div>
+<h1 className='class2'>Participant List</h1>
+<span className='success font-xl'>{this.state.message}</span>
+
+</div>
+ 
+
+<Table striped bordered hover >
+<thead>
+    <th>participantId</th>
+    <th>participantName</th>
+     <th>events</th>
+     <th>email</th>
+     <th>contactNo</th>
+     <th>Gender</th>
+     <th>newsletter</th>
+</thead>
+<tbody>
+{this.state.participants.map((participant,index) =>{
+
+return <tr style={header} key={participant.participantId}>
+<td>{participant.participantId}</td>
+    <td>{participant.participantName}</td>
+    <td>{participant.events}</td>
+    <td>{participant.email}</td>
+    <td>{participant.contactNo}</td>
+    <td>{participant.gender}</td>
+    <td>{participant.newsletter}</td>
+    <Button variant="primary" onClick={this.updateParticipant.bind(this,participant.participantId)}>Edit</Button>
+    <Button variant="danger" onClick={this.deleteParticipant.bind(this,participant.participantId)}>Delete</Button>
+        </tr>
+}
+
+)}
+</tbody>
+
+</Table>
+
+
+<div>
+    <h3 className='class1'>Participant registration EditForm</h3>
+<form onSubmit={this.onSubmitParticipant.bind(this)}>
+<input type="text" value={this.state.participant.email} onChange={this.onChangeEmail.bind(this)}/>
+<input type="text" value={this.state.participant.contactNo} onChange={this.onChangecontact.bind(this)}/>
+<input type="submit"/>
+</form>
+</div>
+
+
+
+
+        </div> );
+    }
+}
+ 
+export default Participants;
